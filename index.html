@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scroll-Reactive 3D Background</title>
+     <script type="importmap">
+        {
+            "imports": {
+         "three":"https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js",
+        "GLTFLoader": "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/GLTFLoader.js",
+        "OrbitControls":"https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/controls/OrbitControls.js",
+        "RGBELoader":"https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/RGBELoader.js"
+            }
+        }
+    </script>
     <style>
         * {
             margin: 0;
@@ -134,10 +144,10 @@
     </div>
 
     <script type="module">
-        import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js';
-        import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/GLTFLoader.js';
-        import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/controls/OrbitControls.js';
-        import { RGBELoader } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/RGBELoader.js';
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'GLTFLoader';
+        import { OrbitControls } from 'OrbitControls';
+        import { RGBELoader } from 'RGBELoader';
 
         // Scene setup
         const scene = new THREE.Scene();
