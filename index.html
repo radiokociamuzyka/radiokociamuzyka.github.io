@@ -385,11 +385,11 @@
             
             // Update controls
             controls.update();
-            
+            vfx.update(renderer.domElement);
             // Render
             renderer.render(scene, camera);
 
-            vfx.update(renderer.domElement);
+            
         }
         animate();
         vfx.add(renderer.domElement, { shader: "rgbShift" });
