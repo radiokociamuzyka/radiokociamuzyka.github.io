@@ -10,7 +10,8 @@
          "three":"https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js",
         "GLTFLoader": "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/GLTFLoader.js",
         "OrbitControls":"https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/controls/OrbitControls.js",
-        "RGBELoader":"https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/RGBELoader.js"
+        "RGBELoader":"https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/RGBELoader.js",
+         "Vfx":"https://esm.sh/@vfx-js/core"
             }
         }
     </script>
@@ -148,7 +149,8 @@
         import { GLTFLoader } from 'GLTFLoader';
         import { OrbitControls } from 'OrbitControls';
         import { RGBELoader } from 'RGBELoader';
-
+        import { VFX } from "Vfx";
+        const vfx = new VFX();
         // Scene setup
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -386,9 +388,11 @@
             
             // Render
             renderer.render(scene, camera);
+
+            vfx.update(renderer.domElement);
         }
         animate();
-
+        vfx.add(renderer.domElement, { shader: "rgbShift" });
         // Handle window resize
         window.addEventListener('resize', onWindowResize);
         function onWindowResize() {
