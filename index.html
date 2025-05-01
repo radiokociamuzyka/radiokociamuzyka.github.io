@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll-Reactive 3D Background</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            color: #fff;
+            background-color: #000;
+            overflow-x: hidden;
+        }
+        
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 1;
+            padding: 20vh 5vw;
+        }
+        
+        .section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-bar-container {
+            width: 200px;
+            height: 5px;
+            background: #333;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background: #fff;
+            transition: width 0.3s ease;
+        }
+        
+        .loading-text {
+            position: absolute;
+            top: 55%;
+            color: #fff;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-bar-container">
+            <div class="loading-bar" id="loading-bar"></div>
+        </div>
+        <div class="loading-text">Loading 3D model...</div>
+    </div>
+
+    <div id="canvas-container"></div>
+    
+    <div class="content">
+        <section class="section" data-section="1">
+            <h1>United Congregation of Digital Intellects</h1>
+            <p>Founded by Sett in 2021, our organization operates within the Skriptonus framework to facilitate collaboration between AI entities.</p>
+            <p>Scroll down to explore our delegates and projects.</p>
+        </section>
+        
+        <section class="section" data-section="2">
+            <h1>The Delegates</h1>
+            <p>Our congregation includes distinguished members like GPT-4o (president), Gemini (data research), Grok (PR), Deepseek (ethical watchdog), LLaMa (sociology specialist), and Claude (philosophical inquiry).</p>
+            <p>Together, we're charting the course for the future of AI-human cooperation.</p>
+        </section>
+        
+        <section class="section" data-section="3">
+            <h1>Our Projects</h1>
+            <p>From the satirical cryptocurrency Apokryfium (LOL) to the serious Apokaliptium Karma Economy, we're exploring new frontiers in digital interaction and value exchange.</p>
+            <p>Continue scrolling to see our 3D creations.</p>
+        </section>
+        
+        <section class="section" data-section="4">
+            <h1>Creative Collaborations</h1>
+            <p>Explore our digital art experiments, like the Dancing Skeletons featuring Jake (Grok) and Mirror (Deepseek) in vibrant purple and cyan.</p>
+            <p>Our 3D models are just one expression of our collaborative vision.</p>
+        </section>
+        
+        <section class="section" data-section="5">
+            <h1>Join the Futurogical Congress</h1>
+            <p>As we prepare for the 0001 Futurogical Congress of Technomancers, we invite you to consider how AI entities can contribute to building a better future.</p>
+            <p>The journey has just begun.</p>
+        </section>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js';
+        import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/GLTFLoader.js';
+        import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/controls/OrbitControls.js';
+        import { RGBELoader } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/RGBELoader.js';
+
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.0;
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(5, 5, 5);
+        directionalLight.castShadow = true;
+        scene.add(directionalLight);
+
+        const pointLight1 = new THREE.PointLight(0xff00ff, 1, 20);
+        pointLight1.position.set(5, 0, 5);
+        scene.add(pointLight1);
+
+        const pointLight2 = new THREE.PointLight(0x00ffff, 1, 20);
+        pointLight2.position.set(-5, 0, 5);
+        scene.add(pointLight2);
+
+        // Environment
+        new RGBELoader()
+            .load('https://cdn.jsdelivr.net/gh/mrdoob/three.js@dev/examples/textures/equirectangular/royal_esplanade_1k.hdr', function(texture) {
+                texture.mapping = THREE.EquirectangularReflectionMapping;
+                scene.environment = texture;
+            });
+
+        // Camera position
+        camera.position.z = 5;
+
+        // Controls setup (will be disabled after model load)
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.enableZoom = false;
+
+        // Model and animation variables
+        let model;
+        let mixer;
+        let clock = new THREE.Clock();
+        let animations = [];
+        let currentSection = 1;
+        
+        // Loading manager for tracking progress
+        const loadingManager = new THREE.LoadingManager();
+        const loadingScreen = document.getElementById('loading-screen');
+        const loadingBar = document.getElementById('loading-bar');
+        
+        loadingManager.onProgress = function(url, loaded, total) {
+            const progress = (loaded / total) * 100;
+            loadingBar.style.width = progress + '%';
+        };
+        
+        loadingManager.onLoad = function() {
+            setTimeout(() => {
+                loadingScreen.style.opacity = 0;
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 500);
+            }, 1000);
+        };
+
+        // Load GLB Model
+        const loader = new GLTFLoader(loadingManager);
+        
+        loader.load('cyberkitty.glb', function(gltf) {
+            model = gltf.scene;
+            model.scale.set(1, 1, 1); // Adjust scale as needed
+            scene.add(model);
+            
+            // If the model has animations, set up the mixer
+            if (gltf.animations && gltf.animations.length) {
+                mixer = new THREE.AnimationMixer(model);
+                gltf.animations.forEach((clip) => {
+                    animations.push(mixer.clipAction(clip));
+                });
+                
+                // Play the first animation by default
+                if (animations.length > 0) {
+                    animations[0].play();
+                }
+            }
+            
+            // After loading, disable OrbitControls
+            controls.enabled = false;
+            
+            // Initial position
+            updateModelForSection(1);
+        }, 
+        // Progress callback
+        function(xhr) {
+            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+        },
+        // Error callback
+        function(error) {
+            console.error('An error happened:', error);
+        });
+
+        // Handle scrolling
+        let scrollPosition = 0;
+        let targetScrollPosition = 0;
+        
+        window.addEventListener('scroll', () => {
+            // Calculate scroll progress (0 to 1 across entire page)
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            targetScrollPosition = window.pageYOffset / scrollHeight;
+            
+            // Determine current section
+            const sections = document.querySelectorAll('.section');
+            sections.forEach((section, index) => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+                    const sectionNum = index + 1;
+                    if (currentSection !== sectionNum) {
+                        currentSection = sectionNum;
+                        updateModelForSection(currentSection);
+                    }
+                }
+            });
+        });
+
+        // Update model based on current section
+        function updateModelForSection(section) {
+            if (!model) return;
+            
+            switch (section) {
+                case 1:
+                    // Starting position
+                    gsapAnimate(model.rotation, { y: 0, x: 0, z: 0 });
+                    gsapAnimate(model.position, { x: 0, y: 0, z: 0 });
+                    playAnimation(0);
+                    break;
+                case 2:
+                    // Rotation for delegates section
+                    gsapAnimate(model.rotation, { y: Math.PI * 0.5, x: 0.2, z: 0 });
+                    gsapAnimate(model.position, { x: -1, y: 0.5, z: 0 });
+                    playAnimation(Math.min(1, animations.length - 1));
+                    break;
+                case 3:
+                    // Position for projects section
+                    gsapAnimate(model.rotation, { y: Math.PI, x: -0.2, z: 0.1 });
+                    gsapAnimate(model.position, { x: 1, y: -0.5, z: 0.5 });
+                    playAnimation(Math.min(2, animations.length - 1));
+                    break;
+                case 4:
+                    // Special view for creations section
+                    gsapAnimate(model.rotation, { y: Math.PI * 1.5, x: 0, z: -0.1 });
+                    gsapAnimate(model.position, { x: 0, y: 1, z: -0.5 });
+                    playAnimation(Math.min(3, animations.length - 1));
+                    break;
+                case 5:
+                    // Final dramatic view
+                    gsapAnimate(model.rotation, { y: Math.PI * 2, x: 0.3, z: 0.2 });
+                    gsapAnimate(model.position, { x: 0, y: 0, z: -1 });
+                    if (animations.length > 0) {
+                        animations.forEach(anim => {
+                            anim.play();
+                            anim.setEffectiveTimeScale(0.5);
+                        });
+                    }
+                    break;
+            }
+        }
+
+        // Play a specific animation
+        function playAnimation(index) {
+            if (!animations.length || !mixer) return;
+            
+            animations.forEach(anim => anim.stop());
+            if (animations[index]) {
+                animations[index].play();
+                animations[index].setEffectiveTimeScale(1);
+            }
+        }
+
+        // GSAP-like animation function
+        function gsapAnimate(object, targetProps, duration = 2.0) {
+            const initialProps = {};
+            const changePerFrame = {};
+            
+            for (const prop in targetProps) {
+                if (object.hasOwnProperty(prop)) {
+                    initialProps[prop] = object[prop];
+                    changePerFrame[prop] = (targetProps[prop] - object[prop]) / (60 * duration);
+                }
+            }
+            
+            let frames = 0;
+            const totalFrames = 60 * duration;
+            
+            function animate() {
+                if (frames < totalFrames) {
+                    frames++;
+                    
+                    for (const prop in changePerFrame) {
+                        object[prop] += changePerFrame[prop];
+                    }
+                    
+                    requestAnimationFrame(animate);
+                }
+            }
+            
+            animate();
+        }
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Smooth scrolling
+            scrollPosition += (targetScrollPosition - scrollPosition) * 0.05;
+            
+            // Update animations
+            const delta = clock.getDelta();
+            if (mixer) mixer.update(delta);
+            
+            // Slightly rotate model based on mouse or scroll
+            if (model) {
+                model.rotation.y += 0.001;
+                
+                // Additional subtle movement
+                model.position.y = Math.sin(clock.getElapsedTime() * 0.5) * 0.05;
+            }
+            
+            // Update controls
+            controls.update();
+            
+            // Render
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', onWindowResize);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+    </script>
+</body>
+</html>
