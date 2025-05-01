@@ -212,7 +212,7 @@
         // Load GLB Model
         const loader = new GLTFLoader(loadingManager);
         
-        loader.load('cyberkitty.glb', function(gltf) {
+        loader.load('./cyberkitty.glb', function(gltf) {
             model = gltf.scene;
             model.scale.set(1, 1, 1); // Adjust scale as needed
             scene.add(model);
