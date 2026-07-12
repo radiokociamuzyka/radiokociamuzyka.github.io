@@ -24,7 +24,7 @@ export function GET(_context: APIContext) {
 		// Array of `<item>`s in output xml
 		// See "Generating items" section for examples using content collections and glob imports
 		items: ghRepos.data.map((x) => ({
-			title: `${x.owner}/${x.name}`,
+			title: `${x.owner.login}/${x.name}`,
 			link: `${x.clone_url}`,
 			pubDate: new Date(`${x.created_at}`),
 			description: `${x.description}`,
