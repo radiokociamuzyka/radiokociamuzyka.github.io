@@ -8,7 +8,7 @@ const orgInfo = await ghHook.request("GET /orgs/{org}", {
 	org: "radiokociamuzyka",
 });
 const ghZen = await ghHook.request("GET /zen", {});
-const _ghEvents = await ghHook.request("GET /orgs/{org}/repos", {
+const ghRepos = await ghHook.request("GET /orgs/{org}/repos", {
 	org: "radiokociamuzyka",
 });
 
@@ -23,7 +23,13 @@ export function GET(_context: APIContext) {
 		site: `https://radiokociamuzyka.github.io/`,
 		// Array of `<item>`s in output xml
 		// See "Generating items" section for examples using content collections and glob imports
-		items: [],
+		items: ghRepos.data.map((x) => ({
+			title: `${x.owner}/${x.name}`,
+			link: `${x.clone_url}`,
+			pubDate: new Date(`${x.created_at}`),
+			description: `${x.description}`,
+			categories: x.topics,
+		})),
 		// (optional) inject custom xml
 		customData: `<zen>${ghZen.data}</zen>`,
 	});
