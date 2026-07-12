@@ -4,7 +4,7 @@
 import { Octokit } from "@octokit/core";
 
 const octokit = new Octokit({});
-const _ghZen = await octokit.request("GET /zen");
+const ghZen = await octokit.request("GET /zen");
 ---
 <div>
 
