@@ -4,10 +4,9 @@ import { Octokit } from "@octokit/core";
 
 const octokit = new Octokit({});
 
-const orgInfo = await octokit.request("GET /orgs/{org}", {
-  org: "radiokociamuzyka"
+const _orgInfo = await octokit.request("GET /orgs/{org}", {
+	org: "radiokociamuzyka",
 });
-
 ---
 
 <!doctype html>
