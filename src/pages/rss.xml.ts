@@ -1,3 +1,4 @@
+import type { APIContext } from 'astro';
 import rss from '@astrojs/rss';
 import { Octokit } from "@octokit/core";
 
@@ -15,7 +16,7 @@ const ghEvents = await ghHook.request("GET /orgs/{org}/events", {
 
 
 
-export function GET(context) {
+export function GET(context: APIContext) {
   return rss({
     // `<title>` field in output xml
     title: orgInfo.data.login,
@@ -23,7 +24,7 @@ export function GET(context) {
     description: `${orgInfo.data.description}`,
     // Pull in your project "site" from the endpoint context
     // https://docs.astro.build/en/reference/api-reference/#site
-    site: context.site,
+    site: `https://radiokociamuzyka.github.io/`,
     // Array of `<item>`s in output xml
     // See "Generating items" section for examples using content collections and glob imports
     items: [],
