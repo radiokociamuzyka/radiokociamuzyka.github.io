@@ -1,5 +1,13 @@
 ---
 // import astroLogo from '../assets/astro.svg';
 // import background from '../assets/background.svg';
+import { Octokit } from "@octokit/core";
+
+const octokit = new Octokit({});
+const ghZen = await octokit.request("GET /zen");
 ---
-<div></div>
+<div>
+
+	{ghZen.data}
+	
+</div>

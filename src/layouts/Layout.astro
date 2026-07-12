@@ -1,5 +1,13 @@
 ---
-import "../assets/main.css"
+import "../assets/main.css";
+import { Octokit } from "@octokit/core";
+
+const octokit = new Octokit({});
+
+const orgInfo = await octokit.request("GET /orgs/{org}", {
+  org: "radiokociamuzyka"
+});
+
 ---
 
 <!doctype html>
@@ -9,19 +17,10 @@ import "../assets/main.css"
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" href="https://avatars.githubusercontent.com/u/207432944?s=64&v=4" />
 		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={orgInfo.data.description} />
 		<title>Radio Kocia Muzyka on GitHub</title>
-		
 	</head>
 	<body>
 		<slot />
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
