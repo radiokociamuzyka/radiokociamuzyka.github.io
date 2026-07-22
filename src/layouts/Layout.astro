@@ -1,7 +1,7 @@
 ---
 import "../assets/main.css";
 import { Octokit } from "@octokit/core";
-
+import Topnavs from "../components/topnavs.astro";
 const octokit = new Octokit({});
 
 const orgInfo = await octokit.request("GET /orgs/{org}", {
@@ -20,7 +20,7 @@ const orgInfo = await octokit.request("GET /orgs/{org}", {
 		<title>Radio Kocia Muzyka on GitHub</title>
 	</head>
 	<body>
-		
+		<Topnavs></Topnavs>
 		<slot />
 	</body>
 </html>
